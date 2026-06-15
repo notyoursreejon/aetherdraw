@@ -1185,17 +1185,20 @@ class AetherDrawApp {
             this.ux.cacheUIBounds();
         });
 
-        // Initialize webcam
-        try {
-            await this.camera.start(1280, 720, 60);
-        } catch (e) {
+        // Initialize webcam asynchronously so it doesn't block UI registration and ticker loop
+        this.camera.start(1280, 720, 60).catch(e => {
             this.showCameraError();
-        }
+        });
 
         // Onboarding overlay setup
         const skipOnboarding = document.getElementById('btn-skip-onboarding');
         skipOnboarding.addEventListener('click', () => {
-            document.getElementById('onboarding-overlay').style.display = 'none';
+            const overlay = document.getElementById('onboarding-overlay');
+            overlay.style.opacity = '0';
+            overlay.style.transform = 'translate(-50%, -45%) scale(0.95)';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
         });
 
         // Start render ticker loop
