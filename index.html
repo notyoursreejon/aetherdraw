@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Drawing App - Premium</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark">
+    <!-- Drawing Canvas -->
+    <canvas id="drawingCanvas" class="bg-transparent-glass"></canvas>
+
+    <!-- Cursor Canvas -->
+    <canvas id="cursorCanvas"></canvas>
+
+    <!-- Floating Interface Wrapper -->
+    <div id="app-interface">
+        
+        <!-- Controls Panel -->
+        <aside id="controls" class="glass-panel">
+            <header class="panel-header">
+                <div class="logo-area">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.5 7.5"></path><path d="M14 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path></svg>
+                    </div>
+                    <h1>AetherDraw</h1>
+                </div>
+                <span class="version">v2.0</span>
+            </header>
+
+            <!-- Mode Selector -->
+            <section class="control-group">
+                <h3>Draw Mode</h3>
+                <div class="mode-selector">
+                    <button id="btn-brush" class="mode-btn active" data-mode="brush" title="Standard Brush">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M7.5 10.5c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5z"></path><path d="M11.5 7.5c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5z"></path><path d="M16.5 9.5c.828 0 1.5-.672 1.5-1.5s-.672-1.5-1.5-1.5-1.5.672-1.5 1.5.672 1.5 1.5 1.5z"></path><path d="M6 14c0-2 2-3 4-3 1.5 0 3 1 3.5 2.5.5 1.5 1.5 2.5 3 2.5 2.5 0 3.5-2.5 3.5-3"></path></svg>
+                        <span>Brush</span>
+                    </button>
+                    <button id="btn-neon" class="mode-btn" data-mode="neon" title="Neon Glow Brush">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H5z"></path><path d="m8 8 8 8"></path><path d="M16 8v8H8"></path></svg>
+                        <span>Neon</span>
+                    </button>
+                    <button id="btn-airbrush" class="mode-btn" data-mode="airbrush" title="Air Brush Spray">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="M9 6h6"></path><circle cx="12" cy="18" r="3"></circle><path d="M12 15h.01"></path><circle cx="6" cy="6" r="1"></circle><circle cx="18" cy="6" r="1"></circle><circle cx="6" cy="12" r="1"></circle><circle cx="18" cy="12" r="1"></circle></svg>
+                        <span>Airbrush</span>
+                    </button>
+                    <button id="btn-laser" class="mode-btn" data-mode="laser" title="Laser Presentation Pointer">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M12 2v4"></path><path d="M12 18v4"></path><path d="M2 12h4"></path><path d="M18 12h4"></path><path d="M4.93 4.93l2.83 2.83"></path><path d="M16.24 16.24l2.83 2.83"></path><path d="M4.93 19.07l2.83-2.83"></path><path d="M16.24 7.76l2.83-2.83"></path></svg>
+                        <span>Laser</span>
+                    </button>
+                    <button id="btn-eraser" class="mode-btn" data-mode="eraser" title="Eraser">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 17 6.4-6.4a2.8 2.8 0 1 0-4-4L10 13"></path><path d="M5 21h14"></path><path d="M12 11 6 17a2 2 0 1 0 3 3l6-6"></path></svg>
+                        <span>Eraser</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Curated Colors -->
+            <section class="control-group">
+                <div class="section-title-row">
+                    <h3>Palette</h3>
+                    <div class="custom-color-wrapper">
+                        <input type="color" id="customColor" value="#6366f1">
+                        <label for="customColor" title="Custom Color Picker">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path><path d="M2 12h20"></path></svg>
+                        </label>
+                    </div>
+                </div>
+                <div id="colorPalette"></div>
+            </section>
+
+            <!-- Brush Size Slider -->
+            <section class="control-group">
+                <div class="slider-header">
+                    <h3>Size</h3>
+                    <span id="brushSizeValue" class="badge badge-indigo">5px</span>
+                </div>
+                <div class="slider-container">
+                    <input type="range" id="brushSize" min="1" max="50" value="5">
+                </div>
+            </section>
+
+            <!-- Smart Shapes Toggle -->
+            <section class="control-group">
+                <div class="slider-header">
+                    <h3>Smart Shapes</h3>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="toggleShapes" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Canvas Background Preset Selector -->
+            <section class="control-group">
+                <h3>Canvas Style</h3>
+                <div class="bg-selector">
+                    <button class="bg-btn" data-preset="slate-grid" title="Drafting Slate Grid">Grid</button>
+                    <button class="bg-btn" data-preset="chalkboard" title="Green Chalkboard">Chalk</button>
+                    <button class="bg-btn" data-preset="white-paper" title="White Paper Grid">Paper</button>
+                    <button class="bg-btn active" data-preset="transparent-glass" title="Transparent Gray">Glass</button>
+                </div>
+            </section>
+
+            <!-- Action Buttons -->
+            <section class="control-group actions-section">
+                <div class="action-grid">
+                    <button id="undoBtn" class="btn btn-secondary" title="Undo Last Stroke">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>
+                        <span>Undo</span>
+                    </button>
+                    <button id="redoBtn" class="btn btn-secondary" title="Redo Last Stroke">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"></path><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path></svg>
+                        <span>Redo</span>
+                    </button>
+                </div>
+                <button id="clearBtn" class="btn btn-danger" title="Clear Canvas">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    <span>Clear Canvas</span>
+                </button>
+                <div class="action-grid">
+                    <button id="saveBtn" class="btn btn-primary" title="Export as PNG">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span>Export PNG</span>
+                    </button>
+                    <button id="saveSvgBtn" class="btn btn-secondary" title="Export as SVG Vector">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        <span>Export SVG</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Status Indicator Panel -->
+            <footer id="status-panel">
+                <div class="status-row">
+                    <span class="status-label">Tracking</span>
+                    <span id="badge-hand" class="badge-status no-hand">Inactive</span>
+                </div>
+                <div class="status-row">
+                    <span class="status-label">State</span>
+                    <span id="badge-drawing" class="badge-status idle">Idle</span>
+                </div>
+            </footer>
+        </aside>
+
+        <!-- Video Preview Panel -->
+        <div id="video-wrapper" class="glass-panel">
+            <div class="video-header">
+                <div class="video-title">
+                    <span class="pulse-indicator"></span>
+                    <span>Camera Stream</span>
+                </div>
+                <div class="video-header-actions">
+                    <button id="btn-fullscreen-video" title="Toggle Fullscreen Background">
+                        <svg id="fullscreen-enter-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                        <svg id="fullscreen-exit-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14h6v6m10-10h-6V4m0 16v-6h6M4 10h6V4"></path></svg>
+                    </button>
+                    <button id="btn-toggle-video" title="Minimize / Maximize Video">
+                        <svg id="minimize-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"></polyline><polyline points="20 10 14 10 14 4"></polyline><line x1="14" y1="10" x2="21" y2="3"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                        <svg id="maximize-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <div id="video-container">
+                <video id="webcam" autoplay playsinline muted></video>
+                <canvas id="handOverlay"></canvas>
+            </div>
+        </div>
+
+        <!-- Instructions Overlay -->
+        <div id="instructions-card" class="glass-panel">
+            <button id="btn-close-instructions" title="Close Help">&times;</button>
+            <div class="instruction-title">Gestures Guide</div>
+            <ul class="instruction-steps">
+                <li>
+                    <span class="step-num">1</span>
+                    <p>Raise your hand in front of the webcam</p>
+                </li>
+                <li>
+                    <span class="step-num">2</span>
+                    <p>Move your index finger to track pointer</p>
+                </li>
+                <li>
+                    <span class="step-num">3</span>
+                    <p>Pinch thumb & index finger to draw lines</p>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Toggle Help Button -->
+        <button id="btn-help" class="glass-panel" title="Show Gesture Guide">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </button>
+    </div>
+
+    <!-- MediaPipe Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+
+    <!-- Diagnostics HUD -->
+    <div id="perf-hud" class="glass-panel">
+        <header class="hud-header">
+            <span>Diagnostics HUD</span>
+            <span id="hud-perf-level" class="hud-level-badge level-premium">Premium</span>
+        </header>
+        <div class="hud-grid">
+            <div class="hud-item">
+                <span class="hud-label">FPS</span>
+                <span id="hud-fps" class="hud-value">--</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">Camera Latency</span>
+                <span id="hud-cam-latency" class="hud-value">-- ms</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">Inference Time</span>
+                <span id="hud-track-latency" class="hud-value">-- ms</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">Draw Thread</span>
+                <span id="hud-draw-latency" class="hud-value">-- ms</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">Memory Heap</span>
+                <span id="hud-memory" class="hud-value">-- MB</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">Capture Bounds</span>
+                <span id="hud-res" class="hud-value">--</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gesture Onboarding Overlay -->
+    <div id="onboarding-overlay" class="glass-panel">
+        <button id="btn-skip-onboarding" title="Skip Onboarding">&times;</button>
+        <div class="onboarding-content">
+            <div class="onboarding-icon">✨</div>
+            <h2 id="onboarding-title">Calibration</h2>
+            <p id="onboarding-desc">Raise your hand in view of the webcam to begin spatial calibration.</p>
+            <div class="onboarding-interactive-area">
+                <div class="onboarding-gesture-visual">
+                    <svg viewBox="0 0 100 100" class="onboarding-svg">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="3"></circle>
+                        <circle cx="50" cy="50" r="40" fill="none" stroke="var(--accent-cyan)" stroke-width="4" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="251" id="onboarding-progress-circle"></circle>
+                        <g class="hand-icon-g" style="transform-origin: center; transform: translate(15px, 12px) scale(0.7);">
+                            <path d="M30 65 C30 55, 35 45, 40 45 C42 45, 44 47, 44 50 C44 42, 48 38, 52 38 C54 38, 56 40, 56 43 C56 35, 60 32, 64 32 C66 32, 68 34, 68 37 C68 39, 72 39, 74 44 C76 49, 75 65, 65 72 C55 78, 38 78, 30 65 Z" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linejoin="round"></path>
+                            <circle cx="34" cy="52" r="3.5" fill="var(--accent-rose)"></circle>
+                            <circle cx="42" cy="48" r="3.5" fill="var(--accent-cyan)"></circle>
+                            <line x1="34" y1="52" x2="42" y2="48" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-dasharray="2,2"></line>
+                        </g>
+                    </svg>
+                </div>
+                <div id="onboarding-feedback">Searching for hand...</div>
+            </div>
+            <div class="onboarding-steps-indicator">
+                <span class="dot active" id="onb-dot-1"></span>
+                <span class="dot" id="onb-dot-2"></span>
+                <span class="dot" id="onb-dot-3"></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
