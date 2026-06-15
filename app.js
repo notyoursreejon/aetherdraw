@@ -163,12 +163,20 @@ class CameraPipeline {
             this.video.srcObject = this.stream;
             
             // Safe readyState synchronization to avoid metadata race conditions
+            const playVideo = async () => {
+                try {
+                    await this.video.play();
+                } catch (playError) {
+                    console.warn("Muted video play promise rejected or aborted. Continuing anyway...", playError);
+                }
+            };
+
             if (this.video.readyState >= 1) {
-                await this.video.play();
+                await playVideo();
             } else {
                 await new Promise((resolve) => {
                     this.video.onloadedmetadata = async () => {
-                        await this.video.play();
+                        await playVideo();
                         resolve();
                     };
                 });
@@ -178,7 +186,7 @@ class CameraPipeline {
             this.setupLoop();
             return true;
         } catch (e) {
-            console.error("Failed to start video playback:", e);
+            console.error("Failed to start camera stream processing:", e);
             throw e;
         }
     }
@@ -1669,12 +1677,8 @@ class AetherDrawApp {
             modelComplexity: config.complexity
         });
         this.trackerFrameSkip = config.skipFrames;
-        
-        // Re-adjust camera stream constraints on the fly
-        if (this.camera.active && (this.camera.videoWidth !== config.width || this.camera.videoHeight !== config.height)) {
-            this.camera.start(config.width, config.height, config.width === 1280 ? 60 : 30)
-                .catch(() => console.error("Dynamic webcam resolution resize failed"));
-        }
+        // Dynamic camera resolution resizing is bypassed to avoid hardware-level stream interruptions and failures on the fly.
+        // We rely on MediaPipe model complexity and frame skipping which are highly robust.
     }
 
     saveToPng() {
@@ -1706,6 +1710,8 @@ class AetherDrawApp {
         `;
         document.getElementById('video-container').appendChild(error);
     }
+}
+
 // ==========================================================================
 // 11. DIAGNOSTICS & BENCHMARKING SUITE (Phase 12 / Stage 11)
 // ==========================================================================
